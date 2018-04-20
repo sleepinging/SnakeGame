@@ -25,23 +25,23 @@
 #define FOODCHAR "*"
 
 typedef struct Snake{
-	short direction;//ÉßÍ··½Ïò 
-	short rundir;//Ç°½ø·½Ïò 
+	short direction;//è›‡å¤´æ–¹å‘ 
+	short rundir;//å‰è¿›æ–¹å‘ 
 	int length;
 	int maxlen;
 	COORD *pnode;
-	COORD lefttop;//×î×óÉÏ½ÇµÄÇ½×ø±ê 
-	COORD rigthbottom;//×îÓÒÏÂ½ÇµÄÇ½×ø±ê 
+	COORD lefttop;//æœ€å·¦ä¸Šè§’çš„å¢™åæ ‡ 
+	COORD rigthbottom;//æœ€å³ä¸‹è§’çš„å¢™åæ ‡ 
 }Snake,snake;
 
 COORD food={9,2};
 int isdead=0;
-COORD lasttail;//ÉÏ´ÎµÄÎ²°ÍÎ»ÖÃ 
+COORD lasttail;//ä¸Šæ¬¡çš„å°¾å·´ä½ç½® 
 int Score=0;
 int Level=0;
 int Speed=1;
-int debugmod=0;//µ÷ÊÔÄ£Ê½(²»ËÀ) 
-int autumod=0;//×Ô¶¯Ä£Ê½ 
+int debugmod=0;//è°ƒè¯•æ¨¡å¼(ä¸æ­») 
+int autumod=0;//è‡ªåŠ¨æ¨¡å¼ 
 int movemux=1;
 int needmusic=0;
 COORD gettail(Snake &s);
@@ -52,15 +52,15 @@ void updatelevel(int level);
 void updatelength(int len);
 void showfood(COORD food);
 
-void Lock(int &s){
+void Lock(int &s){//åŠ é”
 	while(s==0);
 	--s;
 }
-void Unlock(int &s){
+void Unlock(int &s){//è§£é”
 	++s;
 }
 
-void initsnake(Snake &s,int maxlen,COORD lefttop,COORD rigthbottom){//³õÊ¼»¯Éß 
+void initsnake(Snake &s,int maxlen,COORD lefttop,COORD rigthbottom){//åˆå§‹åŒ–è›‡ 
 	s.direction=RIGHT;
 	s.rundir=RIGHT;
 	s.maxlen=maxlen;
@@ -79,7 +79,7 @@ void initsnake(Snake &s,int maxlen,COORD lefttop,COORD rigthbottom){//³õÊ¼»¯Éß
 void freesanke(Snake &s){
 	free(s.pnode);
 }
-int checkisself(COORD cp,Snake &s){//¼ì²âÕâÒ»¸ñÊÇ²»ÊÇÉßÉíÌå
+int checkisself(COORD cp,Snake &s){//æ£€æµ‹è¿™ä¸€æ ¼æ˜¯ä¸æ˜¯è›‡èº«ä½“
 	COORD p;
 	for(int i=0;i<s.length;++i){
 		p=*(s.pnode+i);
@@ -92,21 +92,21 @@ int checkisself(COORD cp,Snake &s){//¼ì²âÕâÒ»¸ñÊÇ²»ÊÇÉßÉíÌå
 int moveleft(Snake& s);
 int movedown(Snake &s);
 int moveright(Snake &s);
-int moveup(Snake &s){//ÏòÉÏÒÆ¶¯ 
+int moveup(Snake &s){//å‘ä¸Šç§»åŠ¨ 
 	if(s.rundir==2){
 		return movedown(s);
 	}
 	s.direction=UP;
 	s.rundir=UP;
-	COORD up=*s.pnode;//Í·²¿ÉÏÃæÒ»¸ñ 
+	COORD up=*s.pnode;//å¤´éƒ¨ä¸Šé¢ä¸€æ ¼ 
 	--up.Y;
-	if(up.Y<=s.lefttop.Y&&!debugmod){//×²µ½¶¥²¿ 
+	if(up.Y<=s.lefttop.Y&&!debugmod){//æ’åˆ°é¡¶éƒ¨ 
 		return HITTOP;
 	}
 	if(checkisself(up,s)&&!debugmod){
 		return HITSELF;
 	}
-	if(up.X==food.X&&up.Y==food.Y){//ÏÂÒ»¸ñÊÇÊ³Îï 
+	if(up.X==food.X&&up.Y==food.Y){//ä¸‹ä¸€æ ¼æ˜¯é£Ÿç‰© 
 		eatfood(s,food);
 	}else{		
 		for(int i=s.length;i>0;--i){
@@ -116,21 +116,21 @@ int moveup(Snake &s){//ÏòÉÏÒÆ¶¯
 	}
 	return 0;
 }
-int moveleft(Snake &s){//Ïò×óÒÆ¶¯
+int moveleft(Snake &s){//å‘å·¦ç§»åŠ¨
 	if(s.rundir==3){
 		return moveright(s);
 	}
 	s.direction=LEFT;
 	s.rundir=LEFT;
-	COORD up=*s.pnode;//Í·²¿×óÃæÒ»¸ñ 
+	COORD up=*s.pnode;//å¤´éƒ¨å·¦é¢ä¸€æ ¼ 
 	--up.X;
-	if(up.X<=s.lefttop.X&&!debugmod){//×²µ½×ó²¿ 
+	if(up.X<=s.lefttop.X&&!debugmod){//æ’åˆ°å·¦éƒ¨ 
 		return HITLEFT;
 	}
 	if(checkisself(up,s)&&!debugmod){
 		return HITSELF;
 	}
-	if(up.X==food.X&&up.Y==food.Y){//ÏÂÒ»¸ñÊÇÊ³Îï 
+	if(up.X==food.X&&up.Y==food.Y){//ä¸‹ä¸€æ ¼æ˜¯é£Ÿç‰© 
 		eatfood(s,food);
 	}else{		
 		for(int i=s.length;i>0;--i){
@@ -140,21 +140,21 @@ int moveleft(Snake &s){//Ïò×óÒÆ¶¯
 	}
 	return 0;
 }
-int movedown(Snake &s){//ÏòÏÂÒÆ¶¯
+int movedown(Snake &s){//å‘ä¸‹ç§»åŠ¨
 	if(s.rundir==0){
 		return moveup(s);
 	}
 	s.direction=DOWN;
 	s.rundir=DOWN;
-	COORD up=*s.pnode;//Í·²¿ÏÂÃæÒ»¸ñ 
+	COORD up=*s.pnode;//å¤´éƒ¨ä¸‹é¢ä¸€æ ¼ 
 	++up.Y;
-	if(up.Y>=s.rigthbottom.Y&&!debugmod){//×²µ½µ×²¿ 
+	if(up.Y>=s.rigthbottom.Y&&!debugmod){//æ’åˆ°åº•éƒ¨ 
 		return HITBOTTMO;
 	}
 	if(checkisself(up,s)&&!debugmod){
 		return HITSELF;
 	}
-	if(up.X==food.X&&up.Y==food.Y){//ÏÂÒ»¸ñÊÇÊ³Îï 
+	if(up.X==food.X&&up.Y==food.Y){//ä¸‹ä¸€æ ¼æ˜¯é£Ÿç‰© 
 		eatfood(s,food);
 	}else{		
 		for(int i=s.length;i>0;--i){
@@ -164,21 +164,21 @@ int movedown(Snake &s){//ÏòÏÂÒÆ¶¯
 	}
 	return 0;
 }
-int moveright(Snake &s){//ÏòÓÒÒÆ¶¯
+int moveright(Snake &s){//å‘å³ç§»åŠ¨
 	if(s.rundir==1){
 		return moveleft(s);
 	}
 	s.direction=RIGHT;
 	s.rundir=RIGHT;
-	COORD up=*s.pnode;//Í·²¿ÓÒÃæÒ»¸ñ 
+	COORD up=*s.pnode;//å¤´éƒ¨å³é¢ä¸€æ ¼ 
 	++up.X;
-	if(up.X>=s.rigthbottom.X&&!debugmod){//×²µ½ÓÒ²¿ 
+	if(up.X>=s.rigthbottom.X&&!debugmod){//æ’åˆ°å³éƒ¨ 
 		return HITRIGHT;
 	}
 	if(checkisself(up,s)&&!debugmod){
 		return HITSELF;
 	}
-	if(up.X==food.X&&up.Y==food.Y){//ÏÂÒ»¸ñÊÇÊ³Îï 
+	if(up.X==food.X&&up.Y==food.Y){//ä¸‹ä¸€æ ¼æ˜¯é£Ÿç‰© 
 		eatfood(s,food);
 	}else{		
 		for(int i=s.length;i>0;--i){
@@ -214,7 +214,7 @@ int movesnakeastep(Snake &s){
 	Unlock(movemux);
 	return r;
 }
-void addlenth(Snake &s,COORD addpos){//Ä¬ÈÏÍ·²¿Ôö¼Ó 
+void addlenth(Snake &s,COORD addpos){//é»˜è®¤å¤´éƒ¨å¢åŠ  
 	if(s.length>=s.maxlen)return;
 	++s.length;
 	for(int i=s.length;i>0;--i){
@@ -223,7 +223,7 @@ void addlenth(Snake &s,COORD addpos){//Ä¬ÈÏÍ·²¿Ôö¼Ó
 	s.pnode[0]=addpos;
 	updatelength(s.length);
 }
-int suiji(int a,int b){//Éú³É[a,b]ÄÚËæ»úÊı 
+int suiji(int a,int b){//ç”Ÿæˆ[a,b]å†…éšæœºæ•° 
 	//srand((unsigned)time(NULL));
 	return (rand()%(b-a+1)+a);
 }
